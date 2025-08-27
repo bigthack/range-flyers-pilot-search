@@ -1,3 +1,6 @@
 {
-  "/page": "app/page.js"
+  "/api/meta/route": "app/api/meta/route.js",
+  "/api/suggest/route": "app/api/suggest/route.js",
+  "/page": "app/page.js",
+  "/api/search/route": "app/api/search/route.js"
 }
