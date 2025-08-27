@@ -1,0 +1,14 @@
+# aircraft/model alias, type rating codes (pipe-delimited)
+Citation M2,CE-525S|CE-525
+Citation CJ3,CE-525|CE-525S
+Citation CJ4,CE-525|CE-525S
+Citation V,CE-500
+Citation Bravo,CE-500
+Citation Ultra,CE-500
+Gulfstream II,G-1159
+Gulfstream IV,G-V
+Boeing 737,B-737
+Airbus A320,A-320
+Phenom 300,EMB-505
+HondaJet,HA-420
+Learjet 60,LR-60

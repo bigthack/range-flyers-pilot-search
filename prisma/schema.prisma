@@ -1,0 +1,91 @@
+// Prisma schema for FAA Airmen data (pilot-centric)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Airman {
+  id        Int     @id @default(autoincrement())
+  uniqueId  String  @unique
+  firstName String
+  lastName  String
+  street1   String?
+  street2   String?
+  city      String?
+  state     String?
+  zip       String?
+  country   String?
+  region    String?
+
+  // Medical (non-authoritative; from FAA downloadable CSV)
+  medicalClass       Int?
+  medicalDate        DateTime?
+  medicalExpireDate  DateTime?
+  basicMedCourseDate DateTime?
+  basicMedCmecDate   DateTime?
+
+  certificates PilotCertificate[]
+  ratings      PilotRating[]
+  typeRatings  PilotTypeRating[]
+
+  // Derived aggregate for fast filters
+  certificateLevels String[] @default([])
+  hasInstrument     Boolean  @default(false)
+  hasMultiEngine    Boolean  @default(false)
+  hasJet            Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lastName, firstName])
+  @@index([state, city])
+  @@index([hasInstrument, hasMultiEngine, hasJet])
+}
+
+model PilotCertificate {
+  id         Int       @id @default(autoincrement())
+  airmanId   Int
+  airman     Airman    @relation(fields: [airmanId], references: [id], onDelete: Cascade)
+  certType   String
+  certLevel  String
+  certExpire DateTime?
+
+  @@index([certType, certLevel])
+}
+
+model PilotRating {
+  id        Int    @id @default(autoincrement())
+  airmanId  Int
+  airman    Airman @relation(fields: [airmanId], references: [id], onDelete: Cascade)
+  levelChar String
+  code      String
+
+  @@index([code])
+}
+
+model PilotTypeRating {
+  id        Int    @id @default(autoincrement())
+  airmanId  Int
+  airman    Airman @relation(fields: [airmanId], references: [id], onDelete: Cascade)
+  levelChar String
+  typeCode  String
+
+  @@index([typeCode])
+  @@index([typeCode, levelChar])
+}
+
+model GeoCache {
+  id        Int      @id @default(autoincrement())
+  city      String
+  state     String
+  lat       Float
+  lng       Float
+  updatedAt DateTime @updatedAt
+
+  @@unique([city, state])
+}
